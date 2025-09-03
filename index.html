@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Obstacle Course Tracker</title>
+</head>
+<body>
+  <h2>Register Participant</h2>
+  <input id="name" placeholder="Name">
+  <input id="troop" placeholder="Troop">
+  <input id="age" placeholder="Age">
+  <button onclick="register()">Register</button>
+
+  <h2>Start Timer</h2>
+  <input id="startId" placeholder="Participant ID">
+  <button onclick="startTimer()">Start</button>
+
+  <h2>Stop Timer</h2>
+  <button onclick="stopTimer()">Stop</button>
+
+  <h2>Match Stop Time</h2>
+  <input id="matchId" placeholder="Participant ID">
+  <input id="stopTime" placeholder="Stop Time (ISO)">
+  <button onclick="matchStop()">Match</button>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxA0WvC4cZOlCaRVQvL2cnFcRM8wWSluvHIgMESCZaOT71VxRWW4SR_iyhffqJxirFM/exec";
+
+    function register() {
+      const name = document.getElementById("name").value;
+      const troop = document.getElementById("troop").value;
+      const age = document.getElementById("age").value;
+      fetch(scriptURL, {
+        method: "POST",
+        body: new URLSearchParams({ action: "register", name, troop, age })
+      }).then(res => res.text()).then(alert);
+    }
+
+    function startTimer() {
+      const id = document.getElementById("startId").value;
+      fetch(scriptURL, {
+        method: "POST",
+        body: new URLSearchParams({ action: "start", id })
+      }).then(res => res.text()).then(alert);
+    }
+
+    function stopTimer() {
+      fetch(scriptURL, {
+        method: "POST",
+        body: new URLSearchParams({ action: "stop" })
+      }).then(res => res.text()).then(alert);
+    }
+
+    function matchStop() {
+      const id = document.getElementById("matchId").value;
+      const stopTime = document.getElementById("stopTime").value;
+      fetch(scriptURL, {
+        method: "POST",
+        body: new URLSearchParams({ action: "match", id, stopTime })
+      }).then(res => res.text()).then(alert);
+    }
+  </script>
+</body>
+</html>
