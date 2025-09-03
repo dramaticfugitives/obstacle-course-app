@@ -1,10 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Obstacle Course Tracker</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }
+    h2 { margin-top: 40px; }
+    input, button, select { margin: 5px 0; padding: 8px; width: 100%; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    .section { margin-bottom: 40px; }
+  </style>
 </head>
 <body>
-  <h1>Welcome to the Obstacle Course App</h1>
-  <p>This is your frontend. Let’s wire it up to Google Sheets next!</p>
+
+  <h1>Obstacle Course Tracker</h1>
+
+  <!-- Registration Section -->
+  <div class="section">
+    <h2>Register Participant</h2>
+    <input id="name" placeholder="Name">
+    <input id="troop" placeholder="Troop Number">
+    <input id="age" placeholder="Age">
+    <button onclick="register()">Register</button>
+  </div>
+
+  <!-- Start Timer Section -->
+  <div class="section">
+    <h2>Start Timer</h2>
+    <select id="startSelect"></select>
+    <button onclick="startTimer()">Start Timer</button>
+  </div>
+
+  <!-- Stop Timer Section -->
+  <div class="section">
+    <h2>Stop Timer</h2>
+    <button onclick="stopTimer()">Record Stop Time</button>
+    <ul id="stopQueue"></ul>
+  </div>
+
+  <!-- Match Stop Time Section -->
+  <div class="section">
+    <h2>Match Stop Time</h2>
+    <select id="matchSelect"></select>
+    <input id="manualStopTime" placeholder="Stop Time (ISO format)">
+    <button onclick="matchStop()">Match Stop Time</button>
+  </div>
+
+  <!-- Leaderboard Section -->
+  <div class="section">
+    <h2>Leaderboard</h2>
+    <table id="leaderboard">
+      <thead>
+        <tr><th>Name</th><th>Troop</th><th>Age</th><th>Time (s)</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const scriptURL = "YOUR_SCRIPT_WEB_APP_URL"; // Replace with your actual URL
+
+    async function register() {
+      const name = document.getElementById("name").value;
+      const troop = document.getElementById("troop").value;
+      const age = document.getElementById("age").value;
+      await fetch(scriptURL, {
+        method: "POST",
+        body: new URLSearchParams({ action: "register", name, troop, age })
+      });
+      alert("Participant registered!");
+      loadParticipants();
+    }
+
+    async function startTimer() {
+      const id = document.getElementById("startSelect").value;
+      await fetch(scriptURL, {
+        method: "POST",
+        body: new URLSearchParams({ action: "start", id })
+      });
+      alert("Timer started!");
+    }
+
+    async function stopTimer() {
+      await fetch(scriptURL, {
+        method: "POST",
+        body: new URLSearchParams({ action: "stop" })
+      });
+      alert("Stop time recorded!");
+      loadStopQueue();
+    }
+
+    async function matchStop() {
+      const id = document.getElementById("matchSelect").value;
+      const stopTime = document.getElementById("manualStopTime").value;
+      await fetch(scriptURL, {
+        method: "POST",
+        body: new URLSearchParams({ action: "match", id, stopTime })
+      });
+      alert("Stop time matched!");
+      loadLeaderboard();
+    }
+
+    async function loadParticipants() {
+      // You can enhance this by creating a read-only endpoint in Apps Script
+      // For now, manually update dropdowns after registration
+    }
+
+    async function loadStopQueue() {
+      // Optional: fetch and display unmatched stop times
+      // Requires a read endpoint in Apps Script
+    }
+
+    async function loadLeaderboard() {
+      // Optional: fetch and display leaderboard
+      // Requires a read endpoint in Apps Script
+    }
+
+    // Initial load
+    loadParticipants();
+    loadLeaderboard();
+  </script>
+
 </body>
 </html>
